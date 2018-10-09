@@ -1,5 +1,9 @@
 # Writing a C Compiler
 
+Following the tutorial `https://norasandler.com/2017/12/15/Write-a-Compiler-3.html`
+
+![alt text][assembly.png]
+
 ## What I will learn
 
 - ASTs, linters, static analyzers, metaprogramming
