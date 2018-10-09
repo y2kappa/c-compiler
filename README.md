@@ -2,7 +2,7 @@
 
 Following the tutorial `https://norasandler.com/2017/12/15/Write-a-Compiler-3.html`
 
-![alt text][assembly.png]
+![alt text](assembly.png "Assembly")
 
 ## What I will learn
 
