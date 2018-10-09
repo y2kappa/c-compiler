@@ -122,6 +122,17 @@ class Operator:
     def __init__(self, token):
         self.token = token
 
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, self.__class__):
+            return self.token == other.token
+
+        return False
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
+        
     def __repr__(self):
         return "Operator(`{}`)".format(self.token)
 
@@ -187,14 +198,14 @@ tokens_groups = {
     "punctuation": (["(", ")", ";", "{", "}"], (lambda x: Punctuation(x))),
     "types": (["int"], (lambda x: Type(x))),
     "keywords": (["return"], (lambda x: Keyword(x))),
-    "operators": (["=", "-", "+", "*", "/"], (lambda x: Operator(x))),
+    "operators": (["=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
     "digits": (DIGITS, (lambda x: Number(x))),
     "letters": (LETTERS, (lambda x: Name(x)))
 }
 
 tokens_split_groups = {
     "punctuation": (["(", ")", ";", "{", "}"], (lambda x: Punctuation(x))),
-    "operators": (["=", "-", "+", "*", "/"], (lambda x: Operator(x)))
+    "operators": (["=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
 }
 
 def tokenize_naked(content):

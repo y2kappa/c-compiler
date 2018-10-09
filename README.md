@@ -77,7 +77,57 @@ Write a parse function that accepts a list of tokens and returns an AST, rooted 
 
 #### Code generation
 
+### Week 3
+Need to distinguish between `-` for negative and `-` for substraction.
 
+AST for `2 - (-3)`:
+```ocaml
+
+two = Const(2)
+three = Const(3)
+neg_three = UnaryOperation(NEG, three)
+exp = BinaryOperation(MINUS, two, neg_three)
+```
+
+#### 1. Need to take into account operator precedence:
+- for example `*` has higher precendence than `+`
+#### 2. Need to handle associativity: 
+- for example `1 - 2 - 3` needs to be handled as `(1 - 2) - 3` and never as `1 - (2 - 3)`
+#### 3. Needs to not be left recursive.
+- for example in this ``` <expr> <binary_op> <expr> ``` the left-most term is also `<expr>` - this is not incorrect, but recursive descent parsers can't handle them.
+
+
+#### 1. Operator precedence
+
+- `unary` operators first, they have higher precedence than binary operators
+- a `unary` operator should only be allpied to a whole expression if 
+	- the expression is a single integer, eg `~4`
+	- the expression is wrapped in parantheses, eg `~(1+1)`
+	- the expression is itself a unary operation, eg `~!8`, `-~(2+2)` 
+
+- to achieve this, we need another symbol to refer to `an expression a unary operator can be applied to`. call that a `factor`. update grammar:
+
+```html
+<exp> ::= <exp> <binary_op> <exp> | <factor>
+<factor> ::= "(" <exp> ")" | <unary_op> <factor> | <int>
+```
+
+- also, to handle `*` and `/` correctly:
+
+```html
+<exp> ::= <exp> ("+" | "-") <exp> | <term>
+<term> ::= <term> ("*" | "/") <term> | <factor>
+<factor> ::= "(" <exp> ")" | <unary_op> <factor> | <int>
+```
+
+#### 2. Associativity
+- the grammar above still does not handle associativity well
+- we need to introduce the semantics `{ }` which means something can be repeated zero or more times:
+```html
+<exp> 		::= <term> { ("+" | "-") <term> }
+<term> 		::= <factor> { ("*" | "/") <factor> }
+<factor> 	::= "(" <exp> ")" | <unary_op> <factor> | <int>
+```
 
 ### To further search:
 - linters, static analyzers, and metaprogramming
