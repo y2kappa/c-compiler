@@ -73,7 +73,7 @@ class Constant(Expression):
         self.token = token
 
     def __repr__(self):
-        return "Constant({})".format(self.token)
+        return "{}".format(self.token)
 
 class UnaryOperation(Expression):
     def __init__(self, operator, expression):
@@ -81,7 +81,7 @@ class UnaryOperation(Expression):
         self.expression = expression
 
     def __repr__(self):
-        return "UnaryOperation({}, {})".format(self.operator, self.expression)
+        return "UnOp({}, {})".format(self.operator, self.expression)
 
 class BinaryOperation(Expression):
     def __init__(self, operator, lhs, rhs):
@@ -90,7 +90,7 @@ class BinaryOperation(Expression):
         self.rhs = rhs
 
     def __repr__(self):
-        return "BinaryOperation({}, {}, {})".format(self.operator, self.lhs, self.rhs)
+        return "BinOp({}, {}, {})".format(self.operator, self.lhs, self.rhs)
 
 class Term(Expression):
     pass
@@ -202,9 +202,9 @@ class Function:
         self.function_statement = function_statement
 
     def __repr__(self):
-        return "FUNCTION {} {}: \n\tparams: ()\n\tbody:\n\t\t{} \n}}".format(
-            self.function_return_type.__repr__(), 
+        return "fun {}\n{{\n  returns: {}\n  params: ()\n  body:\n  {} \n}}".format(
             self.function_name.__repr__(),
+            self.function_return_type.__repr__(),
             self.function_statement.__repr__())
 
 def parse_function(tokens):

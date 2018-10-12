@@ -33,6 +33,6 @@ if __name__ == "__main__":
         assembly = generator.generate(ast)
         print ("Assembly: \n{}".format(assembly))
 
-        file_to_write = file_to_lex+".generated.s"
+        file_to_write = file_to_lex+".s"
         with open(file_to_write, 'w') as fw:
             fw.write(assembly)

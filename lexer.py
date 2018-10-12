@@ -96,7 +96,7 @@ class Type:
         return not self.__eq__(other)
 
     def __repr__(self):
-        return self.token.upper()
+        return self.token
         #return "Type(`{}`)".format(self.token)
 
 class Keyword:
@@ -132,9 +132,9 @@ class Operator:
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
         return not self.__eq__(other)
-        
+
     def __repr__(self):
-        return "Operator(`{}`)".format(self.token)
+        return "Op({})".format(self.token)
 
 class Digit:
     def __init__(self, token):
@@ -162,7 +162,7 @@ class Number:
         self.token = token
 
     def __repr__(self):
-        return "Number(`{}`)".format(self.token)
+        return "Nr(`{}`)".format(self.token)
 
 
 class Name:

@@ -1,6 +1,7 @@
 # Writing a C Compiler
 
-Following the tutorial `https://norasandler.com/2017/12/15/Write-a-Compiler-3.html`
+Following the tutorial `https://norasandler.com/2017/12/15/Write-a-Compiler-3.html` <br>
+Picture from `https://drawings.jvns.ca/assembly/`
 
 ![alt text](assembly.png "Assembly")
 
@@ -132,6 +133,93 @@ exp = BinaryOperation(MINUS, two, neg_three)
 <term> 		::= <factor> { ("*" | "/") <factor> }
 <factor> 	::= "(" <exp> ")" | <unary_op> <factor> | <int>
 ```
+
+Having done the parser for factors, terms and binary operations, now we need to implement them on the memory.
+
+For the cpp:
+```cpp
+int main() { return 1 - 2 - 3; }
+```
+Parser return is:
+```cpp
+['int', 'main', '(', ')', '{', 'return', '1', '-', '2', '-', '3', ';', '}']
+fun main
+{
+  returns: int
+  params: ()
+  body:
+  return BinOp(Op(-), BinOp(Op(-), Nr(`1`), Nr(`2`)), Nr(`3`))
+}
+```
+
+- Executing `2 + 3`
+- we need to save at least the first operand the stack. we can't save them in registers because they can be overridden by other processing.
+
+```
+Every process on a computer has some memory. This memory is divided into several segments, one of which is the call stack, or just the stack. The address of the top of the stack is stored in the ESP register, aka the stack pointer. Like with most stacks, you can push things onto the top, or pop things off the top; x86 includes push and pop instructions to do just that. One confusing thing about the stack is that it grows towards lower memory addresses – when you push something onto the stack, you decrement ESP. The processor relies on ESP to figure out where the top of the stack is.
+```
+
+- about registers:
+`https://wiki.skullsecurity.org/index.php?title=Registers`
+- there are 8 of them
+
+- finished up example:
+```cpp
+int main() {
+    return 10 / 3 + 
+            6 * 3 - 
+            (2+3) + 
+            (5-1) + 
+                1 + 
+                1;
+}
+```
+
+```s
+.globl _main
+_main:
+        movl    $2, %eax
+        pushl   %eax
+        movl    $3, %eax
+        popl    %ecx
+        addl    %ecx, %eax
+        pushl   %eax
+        movl    $3, %eax
+        pushl   %eax
+        movl    $10, %eax
+        popl    %ecx
+        movl    $0, %edx
+        idivl   %ecx
+        pushl   %eax
+        movl    $6, %eax
+        pushl   %eax
+        movl    $3, %eax
+        popl    %ecx
+        imul    %ecx, %eax
+        popl    %ecx
+        addl    %ecx, %eax
+        popl    %ecx
+        subl    %ecx, %eax
+        pushl   %eax
+        movl    $1, %eax
+        pushl   %eax
+        movl    $5, %eax
+        popl    %ecx
+        subl    %ecx, %eax
+        popl    %ecx
+        addl    %ecx, %eax
+        pushl   %eax
+        movl    $1, %eax
+        popl    %ecx
+        addl    %ecx, %eax
+        pushl   %eax
+        movl    $1, %eax
+        popl    %ecx
+        addl    %ecx, %eax
+        ret
+
+```
+
 
 ### To further search:
 - linters, static analyzers, and metaprogramming
