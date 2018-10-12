@@ -136,13 +136,59 @@ exp = BinaryOperation(MINUS, two, neg_three)
 
 Having done the parser for factors, terms and binary operations, now we need to implement them on the memory.
 
+Final grammar:
+(Backus-Naur Form)
+
+```html
+<program>       ::= <function>
+<function>      ::= "int" <id> "(" ")" "{" <statement> "}"
+<statement>     ::= "return" <exp> ";"
+<exp>           ::= <term> { ("+" | "-") <term> }
+<term>          ::= <factor> { ("*" | "/") <factor> }
+<factor>        ::= "(" <exp> ")" | <unary_op> <factor> | <int>
+
+```
+
+Pseudocode
+
+```ocaml
+program = Program(function_declaration)
+function_declaration = Function(string, statement) (* string is the function mame *)
+statement = Return(exp)
+exp = BinOp(binary_operator, exp, exp)
+    | UnOp(operator, exp) 
+    | Constant(int)
+    
+```
+
+Current tokens:
+- Open brace `{`
+- Close brace `}`
+- Open parenthesis `(`
+- Close parenthesis `)`
+- Semicolon `;`
+- Int keyword `int`
+- Return keyword `return`
+- Identifier `[`a-zA-Z]\w*`
+- Integer literal `[0-9]+`
+- Minus `-`
+- Bitwise complement `~`
+- Logical negation `!`
+- Addition `+`
+- Multiplication `*`
+- Division `/`
+
 For the cpp:
 ```cpp
-int main() { return 1 - 2 - 3; }
+int main() 
+{ 
+    return 1 - 2 - 3; 
+}
 ```
 Parser return is:
 ```cpp
-['int', 'main', '(', ')', '{', 'return', '1', '-', '2', '-', '3', ';', '}']
+['int', 'main', '(', ')', '{', 'return', '1', '-',
+ '2', '-', '3', ';', '}']
 fun main
 {
   returns: int
@@ -156,7 +202,14 @@ fun main
 - we need to save at least the first operand the stack. we can't save them in registers because they can be overridden by other processing.
 
 ```
-Every process on a computer has some memory. This memory is divided into several segments, one of which is the call stack, or just the stack. The address of the top of the stack is stored in the ESP register, aka the stack pointer. Like with most stacks, you can push things onto the top, or pop things off the top; x86 includes push and pop instructions to do just that. One confusing thing about the stack is that it grows towards lower memory addresses – when you push something onto the stack, you decrement ESP. The processor relies on ESP to figure out where the top of the stack is.
+Every process on a computer has some memory. This memory is divided into several segments, one of which is the call stack, or just the 
+stack. The address of the top of the stack is stored in the ESP 
+register, aka the stack pointer. Like with most stacks, you can push things onto the top, or pop things off the top; x86 includes
+push and pop instructions to do just that. 
+
+One confusing thing about the stack is that it grows towards lower memory addresses – when you push something onto the stack, you 
+decrement ESP. The processor relies on ESP to figure out where 
+the top of the stack is.
 ```
 
 - about registers:
@@ -165,7 +218,8 @@ Every process on a computer has some memory. This memory is divided into several
 
 - finished up example:
 ```cpp
-int main() {
+int main() 
+{
     return 10 / 3 + 
             6 * 3 - 
             (2+3) + 
