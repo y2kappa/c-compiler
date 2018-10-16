@@ -1,16 +1,23 @@
+#!/Users/sanchez/Projects/py/Anaconda/anaconda/bin/python
 
 
 test1 = """int main() { return 2; }"""
 test2 = """int main(){return 2;}"""
 test3 = """int main() { return -32; } """
+test1 = """int main() { return 1 != 2 && 2 >= 3 || 1 < !3; }"""
 
 DIGITS = "0123456789"
 LETTERS = "abcdefghijklmnopqrstuvxyzwABCDEFGHIJKLMNOPQRSTUVXYZW"
 
-def tokenise_array(to_tokenize_array, token):
+def tokenise_array(to_tokenize_array, token, all_possible_tokens):
     result = []
 
     for to_tokenize_element in to_tokenize_array:
+
+        # this is to make sure we do not split '!=' into '!' and '='
+        if to_tokenize_element in all_possible_tokens:
+            result.append(to_tokenize_element)
+            continue
 
         elements_between_tokens = to_tokenize_element.split(token)
         
@@ -198,22 +205,24 @@ tokens_groups = {
     "punctuation": (["(", ")", ";", "{", "}"], (lambda x: Punctuation(x))),
     "types": (["int"], (lambda x: Type(x))),
     "keywords": (["return"], (lambda x: Keyword(x))),
-    "operators": (["=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
+    "operators": (["==", "!=", "&&", "||", "<", ">", ">=", "<=", "=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
     "digits": (DIGITS, (lambda x: Number(x))),
     "letters": (LETTERS, (lambda x: Name(x)))
 }
 
 tokens_split_groups = {
     "punctuation": (["(", ")", ";", "{", "}"], (lambda x: Punctuation(x))),
-    "operators": (["=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
+    "operators": (["==", "!=", "&&", "||", "<", ">", ">=", "<=", "=", "-", "+", "*", "/", "~", "!"], (lambda x: Operator(x))),
 }
 
 def tokenize_naked(content):
 
     tokenized = content.split()
+    all_possible_tokens = tokens_split_groups["punctuation"][0] + tokens_split_groups["operators"][0]
+    
     for _, (tokens, _) in tokens_split_groups.items():
         for token in tokens:
-            tokenized = tokenise_array(tokenized, token)
+            tokenized = tokenise_array(tokenized, token, all_possible_tokens)
 
     return tokenized
 

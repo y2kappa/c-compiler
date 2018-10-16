@@ -274,6 +274,35 @@ _main:
 
 ```
 
+### Week 4 
+
+Adding operators:
+ - AND `&&`
+ - OR `||`
+ - Equal `==`
+ - Not Equal `!=`
+ - Less than `<`
+ - Less than or equal `<=`
+ - Greater than `>`
+ - Greater than or equal `>=`
+
+Precedence has changed. In order:
+ - Multiplication & division `(*, /)`
+ - Addition & subtraction `(+,-)`
+ - Relational less than/greater than/less than or equal/greater than or equal `(<, >,<=,>=)`
+ - Relational equal/not equal `(==, !=)`
+ - Logical AND `(&&)`
+ - Logical OR `(||)`
+
+This changes the grammar:
+```html
+<exp>               ::= <logical-and-exp> { "||" <logical-and-exp> }
+<logical-and-exp>   ::= <equality-exp> { "&&" <equality-exp> }
+<equality-exp>      ::= <relational-exp> { ("!=" | "==") <relational-exp> }
+<relational-exp>    ::= <additive-exp> { ("<" | ">" | "<=" | ">=") <additive-exp> }
+<additive-exp>      ::= <term> { ("+" | "-") <term> }
+
+```
 
 ### To further search:
 - linters, static analyzers, and metaprogramming
