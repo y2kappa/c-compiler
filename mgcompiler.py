@@ -47,5 +47,5 @@ if __name__ == "__main__":
             fw.write(assembly)
 
 
-        p = subprocess.Popen(["gcc", file_to_write, "-O3", "-fno-asynchronous-unwind-tables", "-o", file_to_write[:-2]])
+        p = subprocess.Popen(["gcc", file_to_write, "-m32", "-O3", "-fno-asynchronous-unwind-tables", "-o", file_to_write[:-2]])
 
